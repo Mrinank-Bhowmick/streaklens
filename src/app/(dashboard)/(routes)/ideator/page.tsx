@@ -1,24 +1,76 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { z } from "zod";
 import Heading from "@/components/heading";
 
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(3)
+    .max(6)
+    .refine((value) => value.length <= 6, {
+      message: "Maximum 6 characters are allowed",
+    }),
+});
+
 const IdeatorPage = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleInputChange = (event) => {
+    const formValues = { name: event.target.value };
+    const result = formSchema.safeParse(formValues);
+
+    if (!result.success) {
+      setErrorMessage(result.error.formErrors.fieldErrors.name[0]);
+    } else {
+      setErrorMessage("");
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formValues = { name: event.target.name.value };
+    const result = formSchema.safeParse(formValues);
+
+    if (result.success) {
+      console.log(result.data);
+    } else {
+      console.error(result.error);
+    }
+  };
+
   return (
     <>
-      <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex flex-col items-center justify-start">
-        {/* Radial gradient for the container to give a faded look */}
-        <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-        {/* <Heading /> */}
-        <div className="text-4xl sm:text-3xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-          hi
-        </div>
-        <div className="text-4xl sm:text-3xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-          hi
-        </div>
-        <p className="text-4xl sm:text-7xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
-          Backgrounds
-        </p>
-      </div>
+      <Heading
+        title="AI Ideator"
+        form={
+          <form
+            onSubmit={handleSubmit}
+            className="relative z-20 w-full max-w-md mx-auto mt-4"
+          >
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              onChange={handleInputChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            />
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            <button
+              type="submit"
+              className="mt-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Submit
+            </button>
+          </form>
+        }
+      />
     </>
   );
 };
