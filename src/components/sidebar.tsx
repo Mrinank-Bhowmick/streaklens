@@ -1,15 +1,17 @@
 "use client";
-import { UserButton } from "@clerk/nextjs";
+
+import React, { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import logo from "../../public/streamlens.png";
-import React, { useState } from "react";
+import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 const SidebarNav = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Default to closed
   const pathname = usePathname();
-  const toggleDropdown = () => {
+
+  const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
@@ -18,15 +20,13 @@ const SidebarNav = () => {
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-navbar-purple dark:border-white">
         <div className="px-2 py-2 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center justify-start rtl:justify-end">
+            <div className="flex items-center justify-start">
               <button
-                data-drawer-target="logo-sidebar"
-                data-drawer-toggle="logo-sidebar"
-                aria-controls="logo-sidebar"
+                onClick={toggleSidebar} // Here is the toggle function call
                 type="button"
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
-                <span className="sr-only">Open sidebar</span>
+                <span className="sr-only">Toggle sidebar</span>
                 <svg
                   className="w-6 h-6"
                   aria-hidden="true"
@@ -35,8 +35,8 @@ const SidebarNav = () => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
+                    // clip-rule="evenodd"
+                    // fill-rule="evenodd"
                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
                   ></path>
                 </svg>
@@ -46,7 +46,6 @@ const SidebarNav = () => {
                 className="flex ms-2 md:me-24"
               >
                 <Image src={logo} width={45} height={25} alt="" />
-
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ml-3">
                   SteamLens
                 </span>
@@ -93,7 +92,7 @@ const SidebarNav = () => {
                 type="button"
                 className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 aria-controls="dropdown-example"
-                onClick={toggleDropdown}
+                onClick={toggleSidebar}
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
@@ -144,7 +143,7 @@ const SidebarNav = () => {
                 type="button"
                 className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 aria-controls="dropdown-example"
-                onClick={toggleDropdown}
+                onClick={toggleSidebar}
               >
                 <svg
                   className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
@@ -207,9 +206,9 @@ const SidebarNav = () => {
                   viewBox="0 0 24 24"
                 >
                   <path
-                    fill-rule="evenodd"
+                    // fill-rule="evenodd"
                     d="M17 10v1.126c.367.095.714.24 1.032.428l.796-.797 1.415 1.415-.797.796c.188.318.333.665.428 1.032H21v2h-1.126c-.095.367-.24.714-.428 1.032l.797.796-1.415 1.415-.796-.797a3.979 3.979 0 0 1-1.032.428V20h-2v-1.126a3.977 3.977 0 0 1-1.032-.428l-.796.797-1.415-1.415.797-.796A3.975 3.975 0 0 1 12.126 16H11v-2h1.126c.095-.367.24-.714.428-1.032l-.797-.796 1.415-1.415.796.797A3.977 3.977 0 0 1 15 11.126V10h2Zm.406 3.578.016.016c.354.358.574.85.578 1.392v.028a2 2 0 0 1-3.409 1.406l-.01-.012a2 2 0 0 1 2.826-2.83ZM5 8a4 4 0 1 1 7.938.703 7.029 7.029 0 0 0-3.235 3.235A4 4 0 0 1 5 8Zm4.29 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h6.101A6.979 6.979 0 0 1 9 15c0-.695.101-1.366.29-2Z"
-                    clip-rule="evenodd"
+                    // clip-rule="evenodd"
                   />
                 </svg>
                 <span className="flex-1 ms-3 whitespace-nowrap">Settings</span>

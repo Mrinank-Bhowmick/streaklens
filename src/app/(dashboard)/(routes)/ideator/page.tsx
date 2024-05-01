@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { z } from "zod";
-import Heading from "@/components/heading";
+import FeatureSection from "@/components/FeatureSection";
 
 const formSchema = z.object({
   name: z
@@ -41,7 +41,7 @@ const IdeatorPage = () => {
 
   return (
     <>
-      <Heading
+      <FeatureSection
         title="AI Ideator"
         form={
           <form

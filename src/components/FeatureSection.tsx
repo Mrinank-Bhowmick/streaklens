@@ -5,7 +5,7 @@ interface HeadingProps {
   form: ReactNode;
 }
 
-const Heading: React.FC<HeadingProps> = ({ title, form }) => {
+const FeatureSection: React.FC<HeadingProps> = ({ title, form }) => {
   return (
     <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex flex-col items-center justify-start">
       {/* Radial gradient for the container to give a faded look */}
@@ -18,4 +18,4 @@ const Heading: React.FC<HeadingProps> = ({ title, form }) => {
   );
 };
 
-export default Heading;
+export default FeatureSection;
