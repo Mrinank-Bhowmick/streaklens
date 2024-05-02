@@ -3,36 +3,39 @@ import FeatureSection from "@/components/FeatureSection";
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
+interface Conversation {
+  role: string;
+  text: string;
+}
+
 const ChatApp = () => {
-  const [conversations, setConversations] = useState([]);
-  const [message, setMessage] = useState("");
-  const messagesEndRef = useRef(null);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [message, setMessage] = useState<string>("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef?.current.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [conversations]);
 
-  const handleNewMessage = async (event) => {
-    // Check for security
-    if (event.key === "Enter") {
-      setConversations([...conversations, { role: "User", text: message }]);
+  const handleNewMessage = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setConversations([...conversations, { role: "User", text: message }]);
 
-      try {
-        const prompt = message;
-        setMessage("");
-        const res = await axios.post("/api/ideator", { messages: prompt }); // {data:"Random"}
-        setConversations([
-          ...conversations,
-          { role: "User", text: message },
-          { role: "Server", text: res.data },
-        ]);
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      const prompt = message;
+      setMessage("");
+      const res = await axios.post("/api/ideator", { messages: prompt }); // for testing : { data: "Random" };
+      setConversations([
+        ...conversations,
+        { role: "User", text: message },
+        { role: "Server", text: res.data },
+      ]);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -53,22 +56,21 @@ const ChatApp = () => {
             </div>
           }
         />
-        <div className="flex fixed bottom-0 left-0 right-0 p-4 md:ml-64">
+        <form
+          className="flex fixed bottom-0 left-0 right-0 p-4 md:ml-64"
+          onSubmit={(e) => handleNewMessage(e)}
+        >
           <input
             type="text"
             placeholder="Type prompt..."
             className="border border-gray-300 rounded-lg p-3 w-full "
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleNewMessage}
           />
-          <button
-            className="bg-blue-700 rounded-md p-2 ml-2"
-            onClick={(e) => handleNewMessage(e)}
-          >
+          <button className="bg-blue-700 rounded-md p-2 ml-2" type="submit">
             Send
           </button>
-        </div>
+        </form>
       </div>
     </>
   );
