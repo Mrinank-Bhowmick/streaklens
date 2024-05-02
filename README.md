@@ -1,5 +1,5 @@
-# StreamLens
+# LensPeak
 
-### AI platform for content creators 
+### AI platform for content creators
 
 ### In development phase
