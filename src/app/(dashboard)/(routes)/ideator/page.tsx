@@ -1,45 +1,39 @@
 "use client";
 import FeatureSection from "@/components/FeatureSection";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-interface Conversation {
-  role: "User" | "Server";
-  text: string;
-}
-
-const ChatApp: React.FC = () => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [message, setMessage] = useState<string>("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+const ChatApp = () => {
+  const [conversations, setConversations] = useState([]);
+  const [message, setMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef?.current.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [conversations]);
 
-  const handleButtonClick = async () => {
-    setConversations([...conversations, { role: "User", text: message }]);
+  const handleNewMessage = async (event) => {
+    // Check for security
+    if (event.key === "Enter") {
+      setConversations([...conversations, { role: "User", text: message }]);
 
-    try {
-      const prompt = message;
-      setMessage("");
-      const res = await axios.post("/api/ideator", { messages: prompt });
-      setConversations([
-        ...conversations,
-        { role: "User", text: message },
-        { role: "Server", text: res.data },
-      ]);
-    } catch (error) {
-      console.error(error);
+      try {
+        const prompt = message;
+        setMessage("");
+        const res = await axios.post("/api/ideator", { messages: prompt }); // {data:"Random"}
+        setConversations([
+          ...conversations,
+          { role: "User", text: message },
+          { role: "Server", text: res.data },
+        ]);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  };
-
-  const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setMessage(event.target.value);
   };
 
   return (
@@ -50,10 +44,7 @@ const ChatApp: React.FC = () => {
           form={
             <div className="overflow-auto">
               {conversations.map((conversation, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-start justify-start p-4"
-                >
+                <div key={index} className="flex flex-col p-4 ">
                   <div className="font-bold">{conversation.role}:</div>
                   <div className="">{conversation.text}</div>
                 </div>
@@ -68,12 +59,12 @@ const ChatApp: React.FC = () => {
             placeholder="Type prompt..."
             className="border border-gray-300 rounded-lg p-3 w-full "
             value={message}
-            onChange={(e) => handleMessageChange(e)}
-            onKeyDown={handleButtonClick}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleNewMessage}
           />
           <button
             className="bg-blue-700 rounded-md p-2 ml-2"
-            onClick={handleButtonClick}
+            onClick={(e) => handleNewMessage(e)}
           >
             Send
           </button>
