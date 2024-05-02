@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import axios from "axios";
 
 export default function IdeatorPage() {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
@@ -19,7 +19,7 @@ export default function IdeatorPage() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <label>
           Message:
           <input

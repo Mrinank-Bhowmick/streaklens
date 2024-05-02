@@ -68,7 +68,7 @@ const ChatApp: React.FC = () => {
             placeholder="Type prompt..."
             className="border border-gray-300 rounded-lg p-3 w-full "
             value={message}
-            onChange={handleMessageChange}
+            onChange={(e) => handleMessageChange(e)}
             onKeyDown={handleButtonClick}
           />
           <button
