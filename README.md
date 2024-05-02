@@ -1,4 +1,4 @@
-# LensPeak
+# StreakLens
 
 ### AI platform for content creators
 
