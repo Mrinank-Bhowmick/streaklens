@@ -1,78 +1,86 @@
 "use client";
-import React, { useState } from "react";
-import { z } from "zod";
 import FeatureSection from "@/components/FeatureSection";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import axios from "axios";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(3)
-    .max(6)
-    .refine((value) => value.length <= 6, {
-      message: "Maximum 6 characters are allowed",
-    }),
-});
+interface Conversation {
+  role: "User" | "Server";
+  text: string;
+}
 
-const IdeatorPage = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+const ChatApp: React.FC = () => {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [message, setMessage] = useState<string>("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleInputChange = (event) => {
-    const formValues = { name: event.target.value };
-    const result = formSchema.safeParse(formValues);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    if (!result.success) {
-      setErrorMessage(result.error.formErrors.fieldErrors.name[0]);
-    } else {
-      setErrorMessage("");
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversations]);
+
+  const handleButtonClick = async () => {
+    setConversations([...conversations, { role: "User", text: message }]);
+
+    try {
+      const prompt = message;
+      setMessage("");
+      const res = await axios.post("/api/ideator", { messages: prompt });
+      setConversations([
+        ...conversations,
+        { role: "User", text: message },
+        { role: "Server", text: res.data },
+      ]);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formValues = { name: event.target.name.value };
-    const result = formSchema.safeParse(formValues);
-
-    if (result.success) {
-      console.log(result.data);
-    } else {
-      console.error(result.error);
-    }
+  const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setMessage(event.target.value);
   };
 
   return (
     <>
-      <FeatureSection
-        title="AI Ideator"
-        form={
-          <form
-            onSubmit={handleSubmit}
-            className="relative z-20 w-full max-w-md mx-auto mt-4"
+      <div className="flex flex-col h-[80vh] overflow-auto">
+        <FeatureSection
+          title="Ideator"
+          form={
+            <div className="overflow-auto">
+              {conversations.map((conversation, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-start justify-start p-4"
+                >
+                  <div className="font-bold">{conversation.role}:</div>
+                  <div className="">{conversation.text}</div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+          }
+        />
+        <div className="flex fixed bottom-0 left-0 right-0 p-4 md:ml-64">
+          <input
+            type="text"
+            placeholder="Type prompt..."
+            className="border border-gray-300 rounded-lg p-3 w-full "
+            value={message}
+            onChange={handleMessageChange}
+            onKeyDown={handleButtonClick}
+          />
+          <button
+            className="bg-blue-700 rounded-md p-2 ml-2"
+            onClick={handleButtonClick}
           >
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-            <button
-              type="submit"
-              className="mt-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Submit
-            </button>
-          </form>
-        }
-      />
+            Send
+          </button>
+        </div>
+      </div>
     </>
   );
 };
 
-export default IdeatorPage;
+export default ChatApp;
