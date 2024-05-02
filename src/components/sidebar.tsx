@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../public/streamlens.png";
+import logo from "../../public/LensPeak.png";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 
@@ -42,7 +42,7 @@ const SidebarNav = () => {
                 </svg>
               </button>
               <a
-                href="https://github.com/Mrinank-Bhowmick/StreamLens"
+                href="https://github.com/Mrinank-Bhowmick/LensPeak"
                 className="flex ms-2 md:me-24"
               >
                 <Image src={logo} width={45} height={25} alt="" />
