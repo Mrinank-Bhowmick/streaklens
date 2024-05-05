@@ -47,7 +47,7 @@ const SidebarNav = () => {
               >
                 <Image src={logo} width={45} height={25} alt="" />
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ml-3">
-                  SteamLens
+                  StreakLens
                 </span>
               </a>
             </div>
