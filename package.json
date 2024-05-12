@@ -14,6 +14,7 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.3.0",
     "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12",
     "clsx": "^2.1.1",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.9.0",
