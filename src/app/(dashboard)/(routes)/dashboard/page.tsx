@@ -24,8 +24,8 @@ const tools = [
 
 const page = () => {
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <h2 className="max-w-lg text-3xl font-semibold leading-normal text-gray-900 dark:text-white">
+    <div className="flex flex-col items-center gap-4 p-4 bg-black brightness-75">
+      <h2 className="max-w-lg text-3xl font-semibold leading-normal text-gray-900 dark:text-gray-100">
         StreakLens Creations Studio
       </h2>
       <h4 className="font-playfair text-l italic text-center">
