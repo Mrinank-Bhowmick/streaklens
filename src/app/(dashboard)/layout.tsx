@@ -8,7 +8,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <div>
           <SidebarNav />
         </div>
-        <div className="md:ml-64 md:mt-14 mt-14 brightness-85">{children}</div>
+        <div className="md:ml-64 md:mt-14 mt-14">{children}</div>
       </div>
     </>
   );
