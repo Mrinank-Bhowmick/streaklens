@@ -1,7 +1,9 @@
 import React from "react";
 
 const page = () => {
-  return <div>Hi</div>;
+  return (
+    <div className="flex items-center justify-center h-full">Landing Page</div>
+  );
 };
 
 export default page;
