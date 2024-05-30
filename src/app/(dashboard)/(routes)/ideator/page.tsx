@@ -1,24 +1,75 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState, FormEvent, useRef } from "react";
-import logo from "../../../../../public/logo.svg";
-import { ArrowUpRightFromSquare, Search } from "flowbite-react-icons/outline";
-
+import {
+  ArrowUpRightFromSquare,
+  Search,
+  ChartLineUp,
+  BookOpen,
+  UserCircle,
+} from "flowbite-react-icons/outline";
+export const runtime = "edge";
 const Page = () => {
   const examples = [
-    "Give me SEO tips",
-    "How to make blog",
-    "Write a short story",
+    { icon: <ChartLineUp />, description: "Give me SEO tips" },
+    { icon: <BookOpen />, description: "How to write blog" },
+    { icon: <UserCircle />, description: "Write a Linkedin Bio" },
   ];
   const articles = [
-    "RCB fever grips IPL playoffs as fans chant team's name during KKR vs SRH",
-    "Article 2",
-    "Article 3",
-    "Article 4",
-    "Article 5",
-    "Article 6",
-    "Article 7",
-    "Article 8",
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
+    {
+      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
+      title: "Blending age-old traditions with modern accessories",
+    },
+    {
+      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+      title:
+        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
+    },
   ];
   const [showArticles, setArticles] = useState(false);
   useEffect(() => {
@@ -45,71 +96,53 @@ const Page = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div className="text-white">
-      <div className="h-[70vh] md:h-[75vh] flex flex-col items-center justify-start">
-        <div className="p-4 md:p-8">
-          <Image src={logo} alt="StreakLens" width={50} height={50} />
-        </div>
-        <div className="flex flex-wrap w-full items-start justify-center md:gap-0 gap-2">
-          <div className="flex flex-col items-center md:w-1/2 md:gap-2">
-            <div className="text-xl">What can I do?</div>
-            <button className="flex flex-col gap-1">
-              {examples.map((example, index) => (
-                <div
-                  key={index}
-                  className="flex bg-slate-900 border border-slate-600 rounded-xl gap-2 md:p-2 p-1 hover:bg-slate-600"
-                  onClick={() => {
-                    console.log("clicked");
-                  }}
-                >
-                  <ArrowUpRightFromSquare />
-                  {example}
-                </div>
-              ))}
-            </button>
+      <div className="h-[70vh] md:h-[75vh] flex flex-col items-start justify-start">
+        <div className="w-[78vw] mt-4 ml-4">
+          <div className="text-xl flex justify-between items-end">
+            Latest News<div className="text-xs"> &lt;-Scroll-&gt;</div>
           </div>
-          <div className="md:w-1/2 flex flex-col items-center md:gap-2">
-            <div className="text-xl">Latest News</div>
-            <div>Get summaries...</div>
-            <button className="flex flex-col gap-1 md:h-[250px] md:w-[400px] h-[165px] w-[300px] overflow-y-scroll scrollbar-thin scrollbar-thumb-rose-500 scrollbar-track-transparent">
-              {showArticles ? (
-                articles.map((article, index) => (
-                  <div
-                    key={index}
-                    className="flex bg-slate-900 border border-slate-600 rounded-xl w-[1000px] p-2 gap-2 hover:bg-slate-600"
-                    onClick={() => {
-                      console.log("clicked");
-                    }}
-                  >
-                    <ArrowUpRightFromSquare /> {article}
-                  </div>
-                ))
-              ) : (
-                <div>
-                  <div className="flex flex-col md:w-[380px] w-[280px] animate-pulse gap-2">
-                    <div className="flex justify-start bg-slate-900 border border-slate-600 rounded-xl p-2 gap-2 ">
-                      <ArrowUpRightFromSquare /> Loading...
-                    </div>
-                    <div className="flex justify-start bg-slate-900 border border-slate-600 rounded-xl p-2 gap-2 ">
-                      <ArrowUpRightFromSquare /> Loading...
-                    </div>
-                    <div className="flex justify-start bg-slate-900 border border-slate-600 rounded-xl p-2 gap-2 ">
-                      <ArrowUpRightFromSquare /> Loading...
-                    </div>
-                    <div className="flex justify-start bg-slate-900 border border-slate-600 rounded-xl p-2 gap-2 ">
-                      <ArrowUpRightFromSquare /> Loading...
-                    </div>
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                </div>
-              )}
-            </button>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide flex-nowrap mt-1">
+            {articles.map((article, index) => (
+              <button
+                key={index}
+                className="box h-[25vh] w-[20vh] rounded-lg bg-slate-800 flex-shrink-0 flex items-end p-2 text-sm"
+                style={{
+                  backgroundImage: `url(${article.img})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+                onClick={() => (window.location.href = article.img)} // Example click handler
+              >
+                <span className="text-white bg-black bg-opacity-50 p-1 text-left rounded-lg">
+                  {article.title.substring(0, 50)}...
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="w-full mt-4 flex flex-col md:items-center">
+          <div className="text-xl">What Can I do for you?</div>
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide flex-nowrap mt-1">
+            {examples.map((example, index) => (
+              <div
+                key={index}
+                className="box h-[15vh] w-[20vh] rounded-xl border-slate-800 hover:bg-slate-800 border flex flex-col  flex-shrink-0 text-sm p-2 gap-2"
+                onClick={() => {
+                  console.log("clicked");
+                }}
+              >
+                {example.icon}
+                {example.description}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      <div className="h-[20vh] md:h-[10vh] flex items-start justify-center">
+
+      <div className="h-[20vh] md:h-[10vh] flex flex-col items-start justify-center">
         <form
           onSubmit={(e) => handlePromptSubmit(e, inputRef)}
-          className="w-full ml-8 mr-8"
+          className="w-full px-4"
         >
           <div className="flex items-center gap-2 w-full justify-between rounded-3xl bg-slate-900 border border-slate-600 p-2">
             <div className="flex gap-2 items-center w-full">
@@ -118,7 +151,7 @@ const Page = () => {
                 name="prompt"
                 ref={inputRef}
                 className="flex-grow bg-transparent border-transparent outline-none placeholder-white placeholder-opacity-50 "
-                placeholder="Prompt..."
+                placeholder="Ask anything..."
               />
             </div>
             <button
