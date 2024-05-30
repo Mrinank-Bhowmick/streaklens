@@ -2,7 +2,7 @@
 import { Brain } from "flowbite-react-icons/outline";
 import Link from "next/link";
 import React from "react";
-
+export const runtime = "edge";
 const tools = [
   {
     label: "AI Ideator",
