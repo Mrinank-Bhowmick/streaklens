@@ -39,3 +39,4 @@ next-env.d.ts
 .vercel
 
 /src/app/(dashboard)/(routes)/test
+/my-next-app

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../public/streaklens.png";
+import logo from "../../public/logo.svg";
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 

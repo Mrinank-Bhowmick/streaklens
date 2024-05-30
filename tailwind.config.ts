@@ -31,7 +31,7 @@ const config: Config = {
   },
   plugins: [
     require("flowbite/plugin"),
-    require("tailwind-scrollbar"),
+    require("tailwind-scrollbar-hide"),
     function ({ matchUtilities, theme }: any) {
       matchUtilities(
         {
