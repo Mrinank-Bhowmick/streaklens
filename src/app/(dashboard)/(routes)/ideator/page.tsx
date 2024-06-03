@@ -7,13 +7,35 @@ import {
   ChartLineUp,
   BookOpen,
   UserCircle,
+  Pen,
 } from "flowbite-react-icons/outline";
 export const runtime = "edge";
 const Page = () => {
   const examples = [
-    { icon: <ChartLineUp />, description: "Give me SEO tips" },
-    { icon: <BookOpen />, description: "How to write blog" },
-    { icon: <UserCircle />, description: "Write a Linkedin Bio" },
+    {
+      icon: <Pen />,
+      description: "Create a Instagram planner",
+      prompt:
+        "Create a content calendar for a Instagram account on reviewing real estate listings.",
+    },
+    {
+      icon: <ChartLineUp />,
+      description: "Give me SEO tips",
+      prompt:
+        "Provide a comprehensive list of SEO tips to improve the search engine ranking of a blog focused on technology reviews.",
+    },
+    {
+      icon: <BookOpen />,
+      description: "How to write blog",
+      prompt:
+        "Give detailed steps and best practices for writing a successful blog post on sustainable living, including structure, content, and promotion strategies.",
+    },
+    {
+      icon: <UserCircle />,
+      description: "Write a Linkedin Bio",
+      prompt:
+        "Craft a professional LinkedIn bio for a software engineer with 10 years of experience in full-stack development, highlighting key skills, achievements, and career goals.",
+    },
   ];
   const articles = [
     {
@@ -71,15 +93,6 @@ const Page = () => {
         "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
     },
   ];
-  const [showArticles, setArticles] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setArticles(true);
-    }, 3000);
-
-    // Cleanup function to clear the timeout if the component unmounts before the timeout finishes
-    return () => clearTimeout(timer);
-  }, []);
 
   const handlePromptSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
