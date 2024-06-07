@@ -2,8 +2,8 @@
 // After adding bindings to `wrangler.toml`, regenerate this interface via `npm run cf-typegen`
 interface Env {
 	newsdataAPI: string;
-	UPSTASH_TOKEN: string | undefined;
-	UPSTASH_INDEX_URL: string | undefined;
+	UPSTASH_TOKEN: string;
+	UPSTASH_INDEX_URL: string;
 	KV: KVNamespace;
 	AI: unknown;
 }

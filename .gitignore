@@ -40,3 +40,5 @@ next-env.d.ts
 
 /src/app/(dashboard)/(routes)/test
 /my-next-app
+
+.wrangler

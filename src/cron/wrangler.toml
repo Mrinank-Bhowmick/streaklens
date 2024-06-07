@@ -4,7 +4,7 @@ compatibility_date = "2024-05-29"
 
 
 [triggers]
-crons = ["* */12 * * *"]
+crons = ["42 2,17 * * *","39 2,17 * * *","36 2,17 * * *","33 2,17 * * *","30 2,17 * * *"]
 
 [[kv_namespaces]]
 binding = "KV"

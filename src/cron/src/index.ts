@@ -105,7 +105,7 @@ const obj = {
 				`https://newsdata.io/api/1/news?apikey=${env.newsdataAPI}&country=in&language=en&category=business,crime,politics,sports,technology `
 			);
 			const top_10_news: any = await top10.json();
-			await addEmbeddings(top_10_news.results.slice(0, 7), 'top10');
+			await addEmbeddings(top_10_news.results.slice(0, 5), 'top10');
 		};
 
 		const add_technology_news = async () => {
@@ -113,25 +113,25 @@ const obj = {
 				`https://newsdata.io/api/1/news?apikey=${env.newsdataAPI}&q=programming%20OR%20coding&language=en&category=technology`
 			);
 			const technology_news: any = await technology.json();
-			await addEmbeddings(technology_news.results.slice(0, 7), 'tech');
+			await addEmbeddings(technology_news.results.slice(0, 5), 'tech');
 		};
 
 		const add_sports_news = async () => {
 			const sports = await fetch(`https://newsdata.io/api/1/news?apikey=${env.newsdataAPI}&country=in&language=en&category=sports`);
 			const sports_news: any = await sports.json();
-			await addEmbeddings(sports_news.results.slice(0, 7), 'sports');
+			await addEmbeddings(sports_news.results.slice(0, 5), 'sports');
 		};
 
 		const add_politics_news = async () => {
 			const politics = await fetch(`https://newsdata.io/api/1/news?apikey=${env.newsdataAPI}&country=in&language=en&category=politics `);
 			const politics_news: any = await politics.json();
-			await addEmbeddings(politics_news.results.slice(0, 7), 'politics');
+			await addEmbeddings(politics_news.results.slice(0, 5), 'politics');
 		};
 
 		const add_business_news = async () => {
 			const business = await fetch(`https://newsdata.io/api/1/news?apikey=${env.newsdataAPI}&country=in&language=en&category=business`);
 			const business_news: any = await business.json();
-			await addEmbeddings(business_news.results.slice(0, 7), 'business');
+			await addEmbeddings(business_news.results.slice(0, 5), 'business');
 		};
 
 		switch (event.cron) {
