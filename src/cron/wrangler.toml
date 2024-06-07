@@ -1,0 +1,14 @@
+name = "news-cron-job"
+main = "src/index.ts"
+compatibility_date = "2024-05-29"
+
+
+[triggers]
+crons = ["42 2,17 * * *","39 2,17 * * *","36 2,17 * * *","33 2,17 * * *","30 2,17 * * *"]
+
+[[kv_namespaces]]
+binding = "KV"
+id = "b6783170bcde4c6f9d9e6152dc8d1027"
+
+[ai]
+binding = "AI"

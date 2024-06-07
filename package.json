@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/nextjs": "^5.0.3",
     "@cloudflare/next-on-pages": "^1.11.3",
+    "@cloudflare/workers-types": "^4.20240603.0",
     "@langchain/cloudflare": "^0.0.4",
     "@tsparticles/engine": "^3.3.0",
     "@tsparticles/react": "^3.0.0",

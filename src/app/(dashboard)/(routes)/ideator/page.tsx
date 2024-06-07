@@ -9,7 +9,10 @@ import {
   UserCircle,
   Pen,
 } from "flowbite-react-icons/outline";
+import Modal from "@/components/Modal";
+
 export const runtime = "edge";
+
 const Page = () => {
   const examples = [
     {
@@ -37,62 +40,36 @@ const Page = () => {
         "Craft a professional LinkedIn bio for a software engineer with 10 years of experience in full-stack development, highlighting key skills, achievements, and career goals.",
     },
   ];
-  const articles = [
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-    {
-      img: "https://i.cdn.newsbytesapp.com/images/l47620240529113808.jpeg",
-      title: "Blending age-old traditions with modern accessories",
-    },
-    {
-      img: "https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-      title:
-        "Gold Rates Bangalore: 24K/100 Grams Gold Jumps By Rs 2,700, Silver Up By Rs 6,200 In 3-Days https://www.goodreturns.in/img/2024/05/gold-rates-1716967382.jpg",
-    },
-  ];
+
+  const [topArticles, setTopArticles] = useState<topArticle[] | null>(null);
+  const [dropDownArticles, setDropDownArticles] = useState<NewsData | null>(
+    null
+  );
+  const [selectArticle, setSelectArticle] = useState("Select Article");
+
+  useEffect(() => {
+    fetch("/api/news/top")
+      .then((response) => response.json())
+      .then((data) => {
+        //console.log(data);
+        setDropDownArticles(data as NewsData);
+        //console.log(dropDownArticles);
+
+        const article_list: topArticle[] = [];
+
+        Object.keys(data as NewsData).forEach((category) => {
+          (data as any)[category].slice(0, 2).forEach((items: Article) => {
+            const item: topArticle = {
+              title: items.title,
+              image_url: items.image_url,
+            };
+            article_list.push(item);
+          });
+        });
+
+        setTopArticles(article_list);
+      });
+  }, []);
 
   const handlePromptSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -110,36 +87,41 @@ const Page = () => {
   return (
     <div className="text-white">
       <div className="h-[70vh] md:h-[75vh] flex flex-col items-start justify-start">
-        <div className="w-[78vw] mt-4 ml-4">
+        <div className="w-[90vw] md:w-[78vw] mt-4 ml-4">
           <div className="text-xl flex justify-between items-end">
             Latest News<div className="text-xs"> &lt;-Scroll-&gt;</div>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide flex-nowrap mt-1">
-            {articles.map((article, index) => (
-              <button
-                key={index}
-                className="box h-[25vh] w-[20vh] rounded-lg bg-slate-800 flex-shrink-0 flex items-end p-2 text-sm"
-                style={{
-                  backgroundImage: `url(${article.img})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-                onClick={() => (window.location.href = article.img)} // Example click handler
-              >
-                <span className="text-white bg-black bg-opacity-50 p-1 text-left rounded-lg">
-                  {article.title.substring(0, 50)}...
-                </span>
-              </button>
-            ))}
+            {topArticles ? (
+              topArticles.map((article, index) => (
+                <button
+                  key={index}
+                  className="box h-[25vh] w-[20vh] rounded-lg bg-slate-800 flex-col justify-between flex-shrink-0 flex items-end p-2 text-sm"
+                  style={{
+                    backgroundImage: `url(${article.image_url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  onClick={() => (window.location.href = article.image_url)} // Example click handler
+                >
+                  <ArrowUpRightFromSquare />
+                  <span className="text-white bg-black bg-opacity-60 p-1 text-left rounded-lg">
+                    {article.title.substring(0, 50)}...
+                  </span>
+                </button>
+              ))
+            ) : (
+              <p>Loading</p>
+            )}
           </div>
         </div>
-        <div className="w-full mt-4 flex flex-col md:items-center">
+        <div className="w-full mt-4 flex flex-col md:items-center md:ml-0 ml-4">
           <div className="text-xl">What Can I do for you?</div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide flex-nowrap mt-1">
             {examples.map((example, index) => (
               <div
                 key={index}
-                className="box h-[15vh] w-[20vh] rounded-xl border-slate-800 hover:bg-slate-800 border flex flex-col  flex-shrink-0 text-sm p-2 gap-2"
+                className="box h-[15vh] w-[20vh] rounded-lg border-slate-800 hover:bg-slate-800 border flex flex-col  flex-shrink-0 text-sm p-2 gap-2 cursor-pointer"
                 onClick={() => {
                   console.log("clicked");
                 }}
@@ -155,9 +137,18 @@ const Page = () => {
       <div className="h-[20vh] md:h-[10vh] flex flex-col items-start justify-center">
         <form
           onSubmit={(e) => handlePromptSubmit(e, inputRef)}
-          className="w-full px-4"
+          className="w-full px-4 flex flex-col md:gap-2 gap-1"
         >
-          <div className="flex items-center gap-2 w-full justify-between rounded-3xl bg-slate-900 border border-slate-600 p-2">
+          {dropDownArticles ? (
+            <Modal
+              article={dropDownArticles}
+              selectArticle={selectArticle}
+              setSelectArticle={setSelectArticle}
+            />
+          ) : (
+            "Loading"
+          )}
+          <div className="flex items-center gap-2 w-full justify-between rounded-lg bg-slate-900 border border-slate-600 p-2">
             <div className="flex gap-2 items-center w-full">
               <input
                 type="text"
