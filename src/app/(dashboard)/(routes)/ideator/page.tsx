@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState, FormEvent, useRef } from "react";
+import { uuid } from "@cfworker/uuid";
+
 import {
   ArrowUpRightFromSquare,
   Search,
@@ -10,10 +12,13 @@ import {
   Pen,
 } from "flowbite-react-icons/outline";
 import Modal from "@/components/Modal";
+import { useRouter } from "next/navigation";
+import Searchbar from "@/components/searchbar";
 
 export const runtime = "edge";
 
 const Page = () => {
+  const router = useRouter();
   const examples = [
     {
       icon: <Pen />,
@@ -46,6 +51,7 @@ const Page = () => {
     null
   );
   const [selectArticle, setSelectArticle] = useState("Select Article");
+  const [pageURL, setPageURL] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/news/top")
@@ -71,23 +77,20 @@ const Page = () => {
       });
   }, []);
 
-  const handlePromptSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-    inputRef: React.RefObject<HTMLInputElement>
-  ) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    console.log(formData.get("prompt"));
-
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
+  const handleSubmit = (text: string) => {
+    const link = pageURL as string;
+    const chatID = uuid();
+    router.push(
+      `/ideator/c/${chatID}?prompt=${encodeURIComponent(
+        text
+      )}&pageURL=${encodeURIComponent(link)}`
+    );
   };
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div className="text-white">
       <div className="h-[70vh] md:h-[75vh] flex flex-col items-start justify-start">
-        <div className="w-[90vw] md:w-[78vw] mt-4 ml-4">
+        <div className="w-[95vw] md:w-[78vw] mt-4 ml-4">
           <div className="text-xl flex justify-between items-end">
             Latest News<div className="text-xs"> &lt;-Scroll-&gt;</div>
           </div>
@@ -134,38 +137,20 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="h-[20vh] md:h-[10vh] flex flex-col items-start justify-center">
-        <form
-          onSubmit={(e) => handlePromptSubmit(e, inputRef)}
-          className="w-full px-4 flex flex-col md:gap-2 gap-1"
-        >
-          {dropDownArticles ? (
-            <Modal
-              article={dropDownArticles}
-              selectArticle={selectArticle}
-              setSelectArticle={setSelectArticle}
-            />
-          ) : (
-            "Loading"
-          )}
-          <div className="flex items-center gap-2 w-full justify-between rounded-lg bg-slate-900 border border-slate-600 p-2">
-            <div className="flex gap-2 items-center w-full">
-              <input
-                type="text"
-                name="prompt"
-                ref={inputRef}
-                className="flex-grow bg-transparent border-transparent outline-none placeholder-white placeholder-opacity-50 "
-                placeholder="Ask anything..."
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-slate-700 rounded-lg px-3 py-1 hover:bg-slate-600"
-            >
-              Search
-            </button>
-          </div>
-        </form>
+      <div className="h-[20vh] md:h-[10vh] flex flex-col items-start justify-center w-full">
+        {dropDownArticles ? (
+          <Modal
+            article={dropDownArticles}
+            selectArticle={selectArticle}
+            setSelectArticle={setSelectArticle}
+            setPageURL={setPageURL}
+          />
+        ) : (
+          "Loading"
+        )}
+        <div className="mr-4 ml-4 md:w-[75vw] w-[95vw]">
+          <Searchbar onSubmit={(text) => handleSubmit(text)} />
+        </div>
       </div>
     </div>
   );

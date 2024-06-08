@@ -10,6 +10,7 @@
     "pages:build": "npx @cloudflare/next-on-pages"
   },
   "dependencies": {
+    "@cfworker/uuid": "^1.12.4",
     "@clerk/nextjs": "^5.0.3",
     "@cloudflare/next-on-pages": "^1.11.3",
     "@cloudflare/workers-types": "^4.20240603.0",
