@@ -5,8 +5,14 @@ type ModalProps = {
   article: NewsData;
   setSelectArticle: React.Dispatch<React.SetStateAction<string>>;
   selectArticle: string;
+  setPageURL: React.Dispatch<React.SetStateAction<string | null>>;
 };
-const Modal = ({ article, selectArticle, setSelectArticle }: ModalProps) => {
+const Modal = ({
+  article,
+  selectArticle,
+  setSelectArticle,
+  setPageURL,
+}: ModalProps) => {
   const [showModal, setShowModal] = useState(false);
   //const [selectArticle, setSelectArticle] = useState("Select Article");
   const [pageNumber, setPageNumber] = useState(1);
@@ -57,6 +63,7 @@ const Modal = ({ article, selectArticle, setSelectArticle }: ModalProps) => {
                             setSelectArticle(
                               element.title.substring(0, 20) + "..."
                             );
+                            setPageURL(element.link);
                             setShowModal(false);
                           }}
                           key={index}
@@ -84,7 +91,7 @@ const Modal = ({ article, selectArticle, setSelectArticle }: ModalProps) => {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="p-2 bg-green-500 rounded-lg md:min-w-[25vh] md:max-w-[35vh] w-[25vh] flex"
+        className="p-2 bg-green-500 rounded-xl md:w-[35vh] w-[35vh] flex ml-4 mb-2"
       >
         <ArrowRight />
         {selectArticle}
