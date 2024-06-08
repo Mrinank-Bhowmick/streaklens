@@ -1,5 +1,6 @@
 interface CloudflareEnv {
   KV: KVNamespace;
+  DB: D1Database;
 }
 
 interface Article {

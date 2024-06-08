@@ -4,3 +4,8 @@ compatibility_flags = ["nodejs_compat"]
 [[kv_namespaces]]
 binding = "KV"
 id = "b6783170bcde4c6f9d9e6152dc8d1027"
+
+[[d1_databases]]
+binding = "DB"
+database_name="streaklens"
+database_id="bd1bf6e1-a050-48f0-b933-38e2a862a4a9"
