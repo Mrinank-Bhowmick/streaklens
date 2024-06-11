@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-//import { getRequestContext } from "@cloudflare/next-on-pages";
-//import { handle } from "hono/vercel";
+import { getRequestContext } from "@cloudflare/next-on-pages";
+import { handle } from "hono/vercel";
 import { getAuth } from "@hono/clerk-auth";
 import { BufferMemory } from "langchain/memory";
 import { CloudflareD1MessageHistory } from "@langchain/cloudflare";
@@ -20,11 +20,21 @@ const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
 app.get("/news/top", async (ctx) => {
   try {
-    const business_news: string = (await ctx.env.KV.get("business")) as string;
-    const politics_news: string = (await ctx.env.KV.get("politics")) as string;
-    const sports_news: string = (await ctx.env.KV.get("sports")) as string;
-    const tech_news: string = (await ctx.env.KV.get("tech")) as string;
-    const top_news: string = (await ctx.env.KV.get("business")) as string;
+    const business_news: string = (await getRequestContext().env.KV.get(
+      "business"
+    )) as string;
+    const politics_news: string = (await getRequestContext().env.KV.get(
+      "politics"
+    )) as string;
+    const sports_news: string = (await getRequestContext().env.KV.get(
+      "sports"
+    )) as string;
+    const tech_news: string = (await getRequestContext().env.KV.get(
+      "tech"
+    )) as string;
+    const top_news: string = (await getRequestContext().env.KV.get(
+      "business"
+    )) as string;
 
     const news = {
       business: JSON.parse(business_news),
@@ -106,7 +116,6 @@ app.post("/chat", async (ctx) => {
 
 app.get("/page", async (ctx) => {});
 
-// export const GET = handle(app); // for deploying it to vercel
-// export const POST = handle(app);
-
 export default app as never; // for deploying it to cf
+export const GET = handle(app); // for deploying it to vercel
+// export const POST = handle(app);
