@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-import { handle } from "hono/vercel";
-import { getAuth } from "@hono/clerk-auth";
+//import { handle } from "hono/vercel";
+//import { getAuth } from "@hono/clerk-auth";
 import { BufferMemory } from "langchain/memory";
 import { CloudflareD1MessageHistory } from "@langchain/cloudflare";
 import { KVNamespace, D1Database, Fetcher } from "@cloudflare/workers-types";
@@ -116,5 +116,5 @@ app.post("/chat", async (ctx) => {
 app.get("/page", async (ctx) => {});
 
 export default app as never; // for deploying it to cf
-export const GET = handle(app); // for deploying it to vercel
-export const POST = handle(app);
+//export const GET = handle(app); // for deploying it to vercel
+//export const POST = handle(app);
