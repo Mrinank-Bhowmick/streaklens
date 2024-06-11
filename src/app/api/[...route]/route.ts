@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { handle } from "hono/vercel";
 import { getAuth } from "@hono/clerk-auth";
+import { BufferMemory } from "langchain/memory";
+import { CloudflareD1MessageHistory } from "@langchain/cloudflare";
 
 export const runtime = "edge";
 
@@ -53,6 +55,20 @@ app.post("/chat-access", async (ctx) => {
   const body = await ctx.req.json();
   const chatID = body.chatID;
   const userID = body.userId;
+  console.log(userID);
+  const memory = new BufferMemory({
+    memoryKey: "history",
+    chatHistory: new CloudflareD1MessageHistory({
+      tableName: "stored_message",
+      sessionId: chatID,
+      database: getRequestContext().env.DB,
+    }),
+  });
+  // await memory.saveContext(
+  //   { input: "My name is Tom" },
+  //   { output: "Ok got it" }
+  // );
+  //console.log(await memory.loadMemoryVariables({}));
   // await getRequestContext().env.DB.exec(
   //   "create table users(userid text,sessionid text)"
   // );
@@ -75,11 +91,28 @@ app.post("/chat-access", async (ctx) => {
       break;
     }
   }
-
-  return ctx.json({
-    hasAccess,
-  });
+  // console.log(JSON.stringify(await memory.chatHistory.getMessages()));
+  if (hasAccess) {
+    return ctx.json({
+      hasAccess,
+      messageHistory: await memory.chatHistory.getMessages(),
+    });
+  } else {
+    return ctx.json({ hasAccess, messageHistory: "" });
+  }
 });
+
+app.post("/chat", async (ctx) => {
+  const body = await ctx.req.json();
+  const prompt = body.prompt;
+  const pageURL = body.pageURL;
+  console.log("Came");
+  console.log(prompt);
+  console.log(pageURL);
+  return ctx.json({ message: "" });
+});
+
+app.get("/page", async (ctx) => {});
 
 export const GET = handle(app); // for deploying it to vercel
 export const POST = handle(app);

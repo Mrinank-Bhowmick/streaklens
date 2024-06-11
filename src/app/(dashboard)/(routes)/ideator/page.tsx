@@ -1,8 +1,14 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState, FormEvent, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  FormEvent,
+  useRef,
+  useContext,
+} from "react";
 import { uuid } from "@cfworker/uuid";
-
+import { ChatContext } from "@/context/ChatContex";
 import {
   ArrowUpRightFromSquare,
   Search,
@@ -51,7 +57,11 @@ const Page = () => {
     null
   );
   const [selectArticle, setSelectArticle] = useState("Select Article");
-  const [pageURL, setPageURL] = useState<string | null>(null);
+  const chatContext = useContext(ChatContext);
+  if (!chatContext) {
+    throw new Error("Chat Context Error");
+  }
+  const { setPageURL, setPrompt } = chatContext;
 
   useEffect(() => {
     fetch("/api/news/top")
@@ -78,13 +88,9 @@ const Page = () => {
   }, []);
 
   const handleSubmit = (text: string) => {
-    const link = pageURL as string;
     const chatID = uuid();
-    router.push(
-      `/ideator/c/${chatID}?prompt=${encodeURIComponent(
-        text
-      )}&pageURL=${encodeURIComponent(link)}`
-    );
+    setPrompt(text);
+    router.push(`/ideator/c/${chatID}`);
   };
   const inputRef = useRef<HTMLInputElement>(null);
   return (
