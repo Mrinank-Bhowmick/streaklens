@@ -111,4 +111,4 @@ app.get("/page", async (ctx) => {});
 
 export default app as never; // for deploying it to cf
 export const GET = handle(app); // for deploying it to vercel
-//export const POST = handle(app);
+export const POST = handle(app);
