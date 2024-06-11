@@ -1,4 +1,5 @@
 name="streaklens"
+
 compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
