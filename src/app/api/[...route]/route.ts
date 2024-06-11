@@ -52,7 +52,7 @@ app.get("/news/top", async (ctx) => {
 });
 
 app.post("/chat-access", async (ctx) => {
-  const auth = getAuth(ctx);
+  //const auth = getAuth(ctx);
   const body = await ctx.req.json();
   const chatID = body.chatID;
   const userID = body.userId;
@@ -62,7 +62,7 @@ app.post("/chat-access", async (ctx) => {
     chatHistory: new CloudflareD1MessageHistory({
       tableName: "stored_message",
       sessionId: chatID,
-      database: ctx.env.DB,
+      database: getRequestContext().env.DB,
     }),
   });
   // await memory.saveContext(
@@ -79,9 +79,8 @@ app.post("/chat-access", async (ctx) => {
   // );
   // await stmt.bind("user_2fjb9p4oIu4bB9iQlAbPZqUB5Jj", "example4").run();
 
-  let { results } = await ctx.env.DB.prepare(
-    "select sessionid from users where userid = ?"
-  )
+  let { results } = await getRequestContext()
+    .env.DB.prepare("select sessionid from users where userid = ?")
     .bind(userID)
     .all();
 
@@ -118,4 +117,4 @@ app.get("/page", async (ctx) => {});
 
 export default app as never; // for deploying it to cf
 export const GET = handle(app); // for deploying it to vercel
-// export const POST = handle(app);
+export const POST = handle(app);
