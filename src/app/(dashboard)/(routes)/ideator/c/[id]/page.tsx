@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useContext } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { ChatContext } from "@/context/ChatContex";
+export const runtime = "edge";
 
 export default function Chat() {
   const params = useParams();
