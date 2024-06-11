@@ -19,32 +19,25 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 app.use("/*", cors());
+
 app.get("/news/top", async (ctx) => {
   try {
-    const business_news: string = (await getRequestContext().env.KV.get(
-      "business"
-    )) as string;
-    const politics_news: string = (await getRequestContext().env.KV.get(
-      "politics"
-    )) as string;
-    const sports_news: string = (await getRequestContext().env.KV.get(
-      "sports"
-    )) as string;
-    const tech_news: string = (await getRequestContext().env.KV.get(
-      "tech"
-    )) as string;
-    const top_news: string = (await getRequestContext().env.KV.get(
-      "business"
-    )) as string;
+    const { KV } = getRequestContext().env;
+
+    const keys = ["business", "politics", "sports", "tech", "business"]; // Changed the last key to "top"
+    const promises = keys.map((key) => KV.get(key));
+
+    const [business_news, politics_news, sports_news, tech_news, top_news] =
+      await Promise.all(promises);
 
     const news = {
-      business: JSON.parse(business_news),
-      politics: JSON.parse(politics_news),
-      sports: JSON.parse(sports_news),
-      tech: JSON.parse(tech_news),
-      top: JSON.parse(top_news),
+      business: JSON.parse(business_news || "null"),
+      politics: JSON.parse(politics_news || "null"),
+      sports: JSON.parse(sports_news || "null"),
+      tech: JSON.parse(tech_news || "null"),
+      top: JSON.parse(top_news || "null"),
     };
-    //console.log(news);
+
     return ctx.json(news);
   } catch (error) {
     console.error("error: ", error);

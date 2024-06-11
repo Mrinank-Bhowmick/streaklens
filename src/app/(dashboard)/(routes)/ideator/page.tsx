@@ -62,15 +62,11 @@ const Page = () => {
     throw new Error("Chat Context Error");
   }
   const { setPageURL, setPrompt } = chatContext;
-
   useEffect(() => {
     fetch("/api/news/top")
       .then((response) => response.json())
       .then((data) => {
-        //console.log(data);
         setDropDownArticles(data as NewsData);
-        //console.log(dropDownArticles);
-
         const article_list: topArticle[] = [];
 
         Object.keys(data as NewsData).forEach((category) => {
@@ -84,6 +80,9 @@ const Page = () => {
         });
 
         setTopArticles(article_list);
+      })
+      .catch((error) => {
+        console.error("error: ", error);
       });
   }, []);
 
