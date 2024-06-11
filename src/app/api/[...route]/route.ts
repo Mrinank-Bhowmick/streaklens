@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { getRequestContext } from "@cloudflare/next-on-pages";
-//import { handle } from "hono/vercel";
+import { handle } from "hono/vercel";
 //import { getAuth } from "@hono/clerk-auth";
 import { BufferMemory } from "langchain/memory";
 import { CloudflareD1MessageHistory } from "@langchain/cloudflare";
@@ -18,7 +18,7 @@ type Bindings = {
 };
 
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
-app.use(cors());
+app.use("/*", cors());
 app.get("/news/top", async (ctx) => {
   try {
     const business_news: string = (await getRequestContext().env.KV.get(
@@ -116,6 +116,7 @@ app.post("/chat", async (ctx) => {
 
 app.get("/page", async (ctx) => {});
 
-export default app; // for deploying it to cf
-//export const GET = handle(app); // for deploying it to vercel
-//export const POST = handle(app);
+export const GET = handle(app); // for deploying it to vercel
+export const POST = handle(app);
+
+export default app as never; // for deploying it to cf
