@@ -67,11 +67,11 @@ const Page = () => {
     console.log("clicked");
     try {
       const response = await fetch("/api/topnews");
-      console.log(await response.json());
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      console.log(data);
       setDropDownArticles(data as NewsData);
       const article_list: topArticle[] = [];
 
