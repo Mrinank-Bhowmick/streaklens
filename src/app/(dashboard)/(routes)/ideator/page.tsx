@@ -62,10 +62,15 @@ const Page = () => {
     throw new Error("Chat Context Error");
   }
   const { setPageURL, setPrompt } = chatContext;
+
   useEffect(() => {
-    fetch("/api/news/top")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch("/api/news/top");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
         setDropDownArticles(data as NewsData);
         const article_list: topArticle[] = [];
 
@@ -80,10 +85,12 @@ const Page = () => {
         });
 
         setTopArticles(article_list);
-      })
-      .catch((error) => {
-        console.error("error: ", error);
-      });
+      } catch (error) {
+        console.error("Error fetching news: ", error);
+      }
+    };
+
+    fetchNews();
   }, []);
 
   const handleSubmit = (text: string) => {
@@ -92,6 +99,7 @@ const Page = () => {
     router.push(`/ideator/c/${chatID}`);
   };
   const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="text-white">
       <div className="h-[70vh] md:h-[75vh] flex flex-col items-start justify-start">
