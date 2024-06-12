@@ -66,7 +66,7 @@ const Page = () => {
   const getnews = async () => {
     console.log("clicked");
     try {
-      const response = await fetch("/api/topnews");
+      const response = await fetch("/api/news/top");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
