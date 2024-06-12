@@ -12,9 +12,6 @@ type Bindings = {
   KV: KVNamespace;
   AI: unknown; //use as fetcher when calling in binding
   DB: D1Database;
-};
-
-type EnvConfig = {
   CF_ACCOUNT_ID: string;
   KV_API_TOKEN: string;
   KV_NAMESPACE_ID: string;
@@ -25,7 +22,8 @@ const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 app.use("/*", cors());
 
 app.get("/news/top", async (ctx) => {
-  const { CF_ACCOUNT_ID, KV_API_TOKEN, KV_NAMESPACE_ID } = env(ctx);
+  const { CF_ACCOUNT_ID, KV_API_TOKEN, KV_NAMESPACE_ID } =
+    getRequestContext().env;
 
   try {
     const keys = ["business", "politics", "sports", "tech", "top"];
@@ -54,7 +52,7 @@ app.get("/news/top", async (ctx) => {
     return ctx.json(news);
   } catch (error) {
     //console.error("error: ", error);
-    return ctx.json({ message: error });
+    return ctx.json({ message: "internal server error" });
   }
 });
 app.post("/chat-access", async (ctx) => {
