@@ -63,37 +63,33 @@ const Page = () => {
   }
   const { setPageURL, setPrompt } = chatContext;
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/news/top");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setDropDownArticles(data as NewsData);
-        const article_list: topArticle[] = [];
-
-        Object.keys(data as NewsData).forEach((category) => {
-          (data as any)[category].slice(0, 2).forEach((items: Article) => {
-            const item: topArticle = {
-              title: items.title,
-              image_url: items.image_url,
-            };
-            article_list.push(item);
-          });
-        });
-
-        setTopArticles(article_list);
-      } catch (error) {
-        console.error("Error fetching news: ", error);
-        setTopArticles([
-          { title: "Error Fetching from server", image_url: "" },
-        ]);
+  const getnews = async () => {
+    console.log("clicked");
+    try {
+      const response = await fetch("/api/news/top");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = await response.json();
+      setDropDownArticles(data as NewsData);
+      const article_list: topArticle[] = [];
+
+      Object.keys(data as NewsData).forEach((category) => {
+        (data as any)[category].slice(0, 2).forEach((items: Article) => {
+          const item: topArticle = {
+            title: items.title,
+            image_url: items.image_url,
+          };
+          article_list.push(item);
+        });
+      });
+
+      setTopArticles(article_list);
+    } catch (error) {
+      console.error("Error fetching news: ", error);
+      setTopArticles([{ title: "Error Fetching from server", image_url: "" }]);
     }
-    fetchData();
-  }, []);
+  };
 
   const handleSubmit = (text: string) => {
     const chatID = uuid();
@@ -129,7 +125,12 @@ const Page = () => {
                 </button>
               ))
             ) : (
-              <p>Loading</p>
+              <button
+                onClick={getnews}
+                className="p-4 hover:bg-slate-500 bg-slate-600 active:bg-slate-800 rounded-lg transition duration-150"
+              >
+                Get here
+              </button>
             )}
           </div>
         </div>
