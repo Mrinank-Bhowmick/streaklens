@@ -4,6 +4,7 @@ interface CloudflareEnv {
   CF_ACCOUNT_ID: string;
   KV_API_TOKEN: string;
   KV_NAMESPACE_ID: string;
+  Worker_KV: string;
 }
 
 interface Article {

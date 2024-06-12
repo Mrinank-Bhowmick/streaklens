@@ -15,6 +15,7 @@ type Bindings = {
   CF_ACCOUNT_ID: string;
   KV_API_TOKEN: string;
   KV_NAMESPACE_ID: string;
+  Worker_KV: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
@@ -55,6 +56,26 @@ app.get("/news/top", async (ctx) => {
     return ctx.json({ message: "internal server error" });
   }
 });
+
+app.get("/topnews", async (ctx) => {
+  const { Worker_KV } = env(ctx);
+  //console.log(key);
+  const response = await fetch(Worker_KV);
+  const data: any = await response.json();
+
+  // Convert the string values to arrays
+  for (const key in data) {
+    try {
+      data[key] = JSON.parse(data[key]);
+    } catch (error) {
+      console.error(`Error parsing ${key}:`, error);
+    }
+  }
+
+  //console.log(data);
+  return ctx.json(data);
+});
+
 app.post("/chat-access", async (ctx) => {
   //const auth = getAuth(ctx);
   const body = await ctx.req.json();
