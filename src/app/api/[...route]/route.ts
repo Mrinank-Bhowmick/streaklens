@@ -73,7 +73,7 @@ app.get("/topnews", async (ctx) => {
   }
 
   //console.log(data);
-  return ctx.json(data);
+  return ctx.json({ data, Worker_KV });
 });
 
 app.post("/chat-access", async (ctx) => {
