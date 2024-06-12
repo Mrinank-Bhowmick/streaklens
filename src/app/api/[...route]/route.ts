@@ -53,7 +53,7 @@ app.get("/news/top", async (ctx) => {
     return ctx.json(news);
   } catch (error) {
     //console.error("error: ", error);
-    return ctx.json({ message: "Internal server error" });
+    return ctx.json({ message: error });
   }
 });
 app.post("/chat-access", async (ctx) => {
