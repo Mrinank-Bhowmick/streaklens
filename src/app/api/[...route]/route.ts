@@ -26,6 +26,7 @@ app.use("/*", cors());
 
 app.get("/news/top", async (ctx) => {
   const { CF_ACCOUNT_ID, KV_API_TOKEN, KV_NAMESPACE_ID } = env(ctx);
+
   try {
     const keys = ["business", "politics", "sports", "tech", "top"];
     const promises = keys.map((key) =>
