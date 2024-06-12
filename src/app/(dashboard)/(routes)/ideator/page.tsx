@@ -64,7 +64,7 @@ const Page = () => {
   const { setPageURL, setPrompt } = chatContext;
 
   useEffect(() => {
-    const fetchNews = async () => {
+    async function fetchData() {
       try {
         const response = await fetch("/api/news/top");
         if (!response.ok) {
@@ -87,10 +87,12 @@ const Page = () => {
         setTopArticles(article_list);
       } catch (error) {
         console.error("Error fetching news: ", error);
+        setTopArticles([
+          { title: "Error Fetching from server", image_url: "" },
+        ]);
       }
-    };
-
-    fetchNews();
+    }
+    fetchData();
   }, []);
 
   const handleSubmit = (text: string) => {
