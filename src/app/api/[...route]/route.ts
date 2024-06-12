@@ -107,6 +107,11 @@ app.post("/chat", async (ctx) => {
   return ctx.json({ message: "" });
 });
 
+app.onError((err, c) => {
+  console.error(`${err}`);
+  return c.text(`Error Message: ${err}`, 500);
+});
+
 app.get("/page", async (ctx) => {});
 
 export default app as never; // for deploying it to cf
