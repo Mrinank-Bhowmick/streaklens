@@ -70,9 +70,9 @@ const Page = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const { data, Worker_KV }: any = await response.json();
+      const data: any = await response.json();
       console.log(data);
-      console.log(Worker_KV);
+      //console.log(Worker_KV);
       setDropDownArticles(data as NewsData);
       const article_list: topArticle[] = [];
 

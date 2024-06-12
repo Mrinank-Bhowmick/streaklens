@@ -58,9 +58,9 @@ app.get("/news/top", async (ctx) => {
 });
 
 app.get("/topnews", async (ctx) => {
-  const { Worker_KV } = env(ctx);
+  const key = ctx.env.Worker_KV;
   //console.log(key);
-  const response = await fetch(Worker_KV);
+  const response = await fetch(key);
   const data: any = await response.json();
 
   // Convert the string values to arrays
@@ -73,7 +73,7 @@ app.get("/topnews", async (ctx) => {
   }
 
   //console.log(data);
-  return ctx.json({ data, Worker_KV });
+  return ctx.json(data);
 });
 
 app.post("/chat-access", async (ctx) => {
