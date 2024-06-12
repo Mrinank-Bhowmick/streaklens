@@ -66,7 +66,9 @@ const Page = () => {
   const getnews = async () => {
     console.log("clicked");
     try {
-      const response = await fetch("/api/topnews");
+      const response = await fetch(
+        "https://topnews.bhowmickmrinank.workers.dev/"
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -77,7 +79,10 @@ const Page = () => {
       const article_list: topArticle[] = [];
 
       Object.keys(data as NewsData).forEach((category) => {
-        (data as any)[category].slice(0, 2).forEach((items: Article) => {
+        // Parse the string to a JSON array
+        const articles = JSON.parse((data as any)[category]);
+
+        articles.slice(0, 2).forEach((items: Article) => {
           const item: topArticle = {
             title: items.title,
             image_url: items.image_url,
