@@ -5,9 +5,10 @@ export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   try {
+    console.log("it came here");
     const { KV } = getRequestContext().env;
 
-    const keys = ["business", "politics", "sports", "tech", "business"]; // Changed the last key to "top"
+    const keys = ["business", "politics", "sports", "tech", "top"]; // Changed the last key to "top"
     const promises = keys.map((key) => KV.get(key));
 
     const [business_news, politics_news, sports_news, tech_news, top_news] =
@@ -24,6 +25,6 @@ export async function GET(request: NextRequest) {
     return new Response(JSON.stringify(news));
   } catch (error) {
     console.error("error: ", error);
-    return new Response(JSON.stringify({ message: "Internal server error" }));
+    return new Response(JSON.stringify({ message: error }));
   }
 }
