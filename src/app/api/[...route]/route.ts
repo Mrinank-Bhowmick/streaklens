@@ -22,39 +22,8 @@ const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
 app.use("/*", cors());
 
-app.get("/news/top", async (ctx) => {
-  const { CF_ACCOUNT_ID, KV_API_TOKEN, KV_NAMESPACE_ID } =
-    getRequestContext().env;
-
-  try {
-    const keys = ["business", "politics", "sports", "tech", "top"];
-    const promises = keys.map((key) =>
-      fetch(
-        `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${key}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${KV_API_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((res) => res.json())
-    );
-    const [business_news, politics_news, sports_news, tech_news, top_news] =
-      await Promise.all(promises);
-    const news = {
-      business: business_news,
-      politics: politics_news,
-      sports: sports_news,
-      tech: tech_news,
-      top: top_news,
-    };
-    //console.log(news); // Print the news object to the console
-    return ctx.json(news);
-  } catch (error) {
-    //console.error("error: ", error);
-    return ctx.json({ message: "internal server error" });
-  }
+app.get("/hello", (c) => {
+  return c.json({ hello: "world" });
 });
 
 app.get("/topnews", async (ctx) => {

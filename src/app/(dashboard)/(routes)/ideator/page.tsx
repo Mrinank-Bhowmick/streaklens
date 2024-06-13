@@ -62,9 +62,7 @@ const Page = () => {
     throw new Error("Chat Context Error");
   }
   const { setPageURL, setPrompt } = chatContext;
-
-  const getnews = async () => {
-    console.log("clicked");
+  async function fetchNewsData() {
     try {
       const response = await fetch(
         "https://topnews.bhowmickmrinank.workers.dev/"
@@ -72,31 +70,55 @@ const Page = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data: any = await response.json();
-      console.log(data);
-      //console.log(Worker_KV);
-      setDropDownArticles(data as NewsData);
-      const article_list: topArticle[] = [];
+      let data: any = await response.json();
 
-      Object.keys(data as NewsData).forEach((category) => {
-        // Parse the string to a JSON array
-        const articles = JSON.parse((data as any)[category]);
+      // Parse each key into an array
+      for (let key in data) {
+        data[key] = JSON.parse(data[key]);
+      }
 
-        articles.slice(0, 2).forEach((items: Article) => {
-          const item: topArticle = {
-            title: items.title,
-            image_url: items.image_url,
-          };
-          article_list.push(item);
-        });
-      });
-
-      setTopArticles(article_list);
+      return data;
     } catch (error) {
       console.error("Error fetching news: ", error);
-      setTopArticles([{ title: "Error Fetching from server", image_url: "" }]);
+      return null;
     }
-  };
+  }
+
+  async function parseNewsData(data: any) {
+    const article_list: topArticle[] = [];
+
+    for (let category in data) {
+      const articles = data[category];
+
+      articles.slice(0, 2).forEach((item: Article) => {
+        const article: topArticle = {
+          title: item.title,
+          image_url: item.image_url,
+        };
+        article_list.push(article);
+      });
+    }
+
+    return article_list;
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const newsData = await fetchNewsData();
+
+      if (newsData) {
+        setDropDownArticles(newsData as NewsData);
+        const topArticles = await parseNewsData(newsData);
+        setTopArticles(topArticles);
+      } else {
+        setTopArticles([
+          { title: "Error Fetching from server", image_url: "" },
+        ]);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   const handleSubmit = (text: string) => {
     const chatID = uuid();
@@ -132,12 +154,7 @@ const Page = () => {
                 </button>
               ))
             ) : (
-              <button
-                onClick={getnews}
-                className="p-4 hover:bg-slate-500 bg-slate-600 active:bg-slate-800 rounded-lg transition duration-150"
-              >
-                Get here
-              </button>
+              <div>Loading</div>
             )}
           </div>
         </div>
