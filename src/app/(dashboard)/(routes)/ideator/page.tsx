@@ -64,9 +64,7 @@ const Page = () => {
   const { setPageURL, setPrompt } = chatContext;
   async function fetchNewsData() {
     try {
-      const response = await fetch(
-        "https://topnews.bhowmickmrinank.workers.dev/"
-      );
+      const response = await fetch("https://news.mrinank.me/");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
