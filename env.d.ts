@@ -1,5 +1,6 @@
 interface CloudflareEnv {
   KV: KVNamespace;
+  AI: unknown; //use as fetcher when calling in binding
   DB: D1Database;
   CF_ACCOUNT_ID: string;
   KV_API_TOKEN: string;

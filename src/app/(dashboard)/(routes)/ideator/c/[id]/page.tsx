@@ -30,9 +30,7 @@ export default function Chat() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          chatID,
-        }),
+        body: JSON.stringify({ chatID }),
       });
 
       const data: any = await response.json();
@@ -93,10 +91,7 @@ export default function Chat() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        prompt: text,
-        pageURL,
-      }),
+      body: JSON.stringify({ prompt: text, pageURL }),
     });
     const data = await response.json();
     console.log(data);
