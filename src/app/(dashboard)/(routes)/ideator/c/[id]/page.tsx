@@ -1,23 +1,21 @@
 "use client";
 import Searchbar from "@/components/searchbar";
-import { useParams, useSearchParams } from "next/navigation";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState, useRef, useContext } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { ChatContext } from "@/context/ChatContex";
 export const runtime = "edge";
 
 export default function Chat() {
   const params = useParams();
+  const chatID = params.id as string;
   const chatData = useContext(ChatContext);
+
   if (!chatData) {
     throw new Error("Chat Data not received");
   }
   const { prompt, pageURL } = chatData;
 
-  const chatID = params.id as string;
-  const { userId } = useAuth();
   const didEffectRun = useRef(false);
-  const [hasAccess, setHasAccess] = useState(false);
   const [HumanMessage, setHumanMessage] = useState<Array<string>>([]);
   const [AIMessage, setAIMessage] = useState<Array<string>>([]);
   const [ChatHistory, setChatHistory] = useState<Array<React.JSX.Element>>([]);
@@ -25,6 +23,7 @@ export default function Chat() {
   useEffect(() => {
     if (didEffectRun.current) return;
     didEffectRun.current = true;
+
     const checkAccess = async () => {
       const response = await fetch("/api/chat-access", {
         method: "POST",
@@ -33,10 +32,12 @@ export default function Chat() {
         },
         body: JSON.stringify({
           chatID,
-          userId,
         }),
       });
+
       const data: any = await response.json();
+      console.log(data);
+
       const newHumanMessages: Array<string> = [];
       const newAIMessages: Array<string> = [];
 
@@ -55,7 +56,7 @@ export default function Chat() {
     if (prompt === "") {
       checkAccess();
     }
-  }, [prompt, chatID, userId]);
+  }, [prompt, chatID]);
 
   useEffect(() => {
     const updatedChatHistory: Array<React.JSX.Element> = [];

@@ -62,6 +62,7 @@ const Page = () => {
     throw new Error("Chat Context Error");
   }
   const { setPageURL, setPrompt } = chatContext;
+
   async function fetchNewsData() {
     try {
       const response = await fetch("https://streaklens.mrinank.me/topnews");
