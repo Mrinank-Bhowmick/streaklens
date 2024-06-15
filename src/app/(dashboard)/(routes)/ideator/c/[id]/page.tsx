@@ -26,19 +26,16 @@ export default function Chat() {
     if (didEffectRun.current) return;
     didEffectRun.current = true;
     const checkAccess = async () => {
-      const response = await fetch(
-        "https://streaklens-backend.bhowmickmrinank.workers.dev/chat-access",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chatID,
-            userId,
-          }),
-        }
-      );
+      const response = await fetch("/backend/chat-access", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatID,
+          userId,
+        }),
+      });
       const data: any = await response.json();
       const newHumanMessages: Array<string> = [];
       const newAIMessages: Array<string> = [];
@@ -85,19 +82,16 @@ export default function Chat() {
         <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">{text}</div>
       </div>,
     ]);
-    const response = await fetch(
-      "https://streaklens-backend.bhowmickmrinank.workers.dev/chat",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: text,
-          pageURL,
-        }),
-      }
-    );
+    const response = await fetch("/backend/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: text,
+        pageURL,
+      }),
+    });
     const data = await response.json();
     console.log(data);
   };

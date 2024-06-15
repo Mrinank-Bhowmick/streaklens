@@ -10,12 +10,16 @@ type Bindings = {
   DB: D1Database;
 };
 
-const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
+const app = new Hono<{ Bindings: Bindings }>().basePath("/backend/");
 
-app.use("/*", cors());
+//app.use("/*", cors());
 
 app.get("/", async (c) => {
   return c.json({ message: "Hello world" });
+});
+
+app.get("/hello", async (c) => {
+  return c.json({ message: "Hello" });
 });
 
 app.post("/chat-access", async (ctx) => {
