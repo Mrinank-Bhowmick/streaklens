@@ -10,15 +10,12 @@ type Bindings = {
   DB: D1Database;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
 app.use("/*", cors());
 
 app.get("/", async (c) => {
-  const tables = await c.env.DB.prepare(
-    "SELECT name FROM sqlite_master WHERE type='table'"
-  ).all();
-  return c.json(tables);
+  return c.json({ message: "Hello world" });
 });
 
 app.post("/chat-access", async (ctx) => {
