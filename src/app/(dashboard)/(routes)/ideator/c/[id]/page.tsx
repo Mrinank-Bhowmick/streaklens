@@ -1,21 +1,23 @@
 "use client";
 import Searchbar from "@/components/searchbar";
-import { Link, useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useContext } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { ChatContext } from "@/context/ChatContex";
 export const runtime = "edge";
 
 export default function Chat() {
   const params = useParams();
-  const chatID = params.id as string;
   const chatData = useContext(ChatContext);
-
   if (!chatData) {
     throw new Error("Chat Data not received");
   }
   const { prompt, pageURL } = chatData;
 
+  const chatID = params.id as string;
+  const { userId } = useAuth();
   const didEffectRun = useRef(false);
+  const [hasAccess, setHasAccess] = useState(false);
   const [HumanMessage, setHumanMessage] = useState<Array<string>>([]);
   const [AIMessage, setAIMessage] = useState<Array<string>>([]);
   const [ChatHistory, setChatHistory] = useState<Array<React.JSX.Element>>([]);
@@ -23,19 +25,21 @@ export default function Chat() {
   useEffect(() => {
     if (didEffectRun.current) return;
     didEffectRun.current = true;
-
     const checkAccess = async () => {
-      const response = await fetch("/api/chat-access", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chatID }),
-      });
-
+      const response = await fetch(
+        "https://streaklens-backend.bhowmickmrinank.workers.dev/chat-access",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chatID,
+            userId,
+          }),
+        }
+      );
       const data: any = await response.json();
-      console.log(data);
-
       const newHumanMessages: Array<string> = [];
       const newAIMessages: Array<string> = [];
 
@@ -46,15 +50,13 @@ export default function Chat() {
           newAIMessages.push(message.kwargs.content);
         }
       });
-
       setHumanMessage(newHumanMessages);
       setAIMessage(newAIMessages);
     };
-
     if (prompt === "") {
       checkAccess();
     }
-  }, [prompt, chatID]);
+  }, [prompt, chatID, userId]);
 
   useEffect(() => {
     const updatedChatHistory: Array<React.JSX.Element> = [];
@@ -73,10 +75,8 @@ export default function Chat() {
         updatedChatHistory.push(<div key={`ai-${i}`}>{AIMessage[i]}</div>);
       }
     }
-
     setChatHistory(updatedChatHistory);
   }, [HumanMessage, AIMessage]);
-
   const handleSubmit = async (text: string) => {
     console.log("Submitted text:", text);
     setChatHistory((prevChatHistory) => [
@@ -85,18 +85,22 @@ export default function Chat() {
         <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">{text}</div>
       </div>,
     ]);
-
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt: text, pageURL }),
-    });
+    const response = await fetch(
+      "https://streaklens-backend.bhowmickmrinank.workers.dev/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: text,
+          pageURL,
+        }),
+      }
+    );
     const data = await response.json();
     console.log(data);
   };
-
   return (
     <div className="flex flex-col justify-between h-[90vh]">
       <div className="overflow-x-auto">

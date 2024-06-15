@@ -1,34 +1,30 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { env } from "hono/adapter";
-import { getRequestContext } from "@cloudflare/next-on-pages";
-import { handle } from "hono/vercel";
-//import { getAuth } from "@hono/clerk-auth";
 import { BufferMemory } from "langchain/memory";
 import { CloudflareD1MessageHistory } from "@langchain/cloudflare";
 import { KVNamespace, D1Database, Fetcher } from "@cloudflare/workers-types";
-export const runtime = "edge";
+
 type Bindings = {
   KV: KVNamespace;
-  AI: unknown; //use as fetcher when calling in binding
+  AI: unknown; //use as fetcher type when calling in binding in llm
   DB: D1Database;
-  CF_ACCOUNT_ID: string;
-  KV_API_TOKEN: string;
-  KV_NAMESPACE_ID: string;
-  Worker_KV: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.use("/*", cors());
 
-app.get("/hello", (c) => {
-  return c.json({ hello: "world" });
+app.get("/", async (c) => {
+  const tables = await c.env.DB.prepare(
+    "SELECT name FROM sqlite_master WHERE type='table'"
+  ).all();
+  return c.json(tables);
 });
 
 app.post("/chat-access", async (ctx) => {
   //const auth = getAuth(ctx);
   const body = await ctx.req.json();
+  console.log(body);
   const chatID = body.chatID;
   const userID = body.userId;
   console.log(userID);
@@ -37,11 +33,12 @@ app.post("/chat-access", async (ctx) => {
     chatHistory: new CloudflareD1MessageHistory({
       tableName: "stored_message",
       sessionId: chatID,
-      database: getRequestContext().env.DB,
+      database: ctx.env.DB,
     }),
   });
-  let { results } = await getRequestContext()
-    .env.DB.prepare("select sessionid from users where userid = ?")
+  let { results } = await ctx.env.DB.prepare(
+    "select sessionid from users where userid = ?"
+  )
     .bind(userID)
     .all();
   let hasAccess = false;
@@ -71,8 +68,4 @@ app.post("/chat", async (ctx) => {
   return ctx.json({ message: "" });
 });
 
-app.get("/page", async (ctx) => {});
-
-export default app as never; // for deploying it to cf
-export const GET = handle(app); // for deploying it to vercel
-export const POST = handle(app);
+export default app;

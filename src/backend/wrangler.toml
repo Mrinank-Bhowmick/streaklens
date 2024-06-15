@@ -1,0 +1,10 @@
+name = "streaklens-backend"
+
+compatibility_flags = ["nodejs_compat"]
+
+compatibility_date = "2023-12-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name="streaklens"
+database_id="bd1bf6e1-a050-48f0-b933-38e2a862a4a9"
