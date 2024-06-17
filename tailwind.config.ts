@@ -27,6 +27,9 @@ const config: Config = {
       colors: {
         "navbar-purple": "#111827",
       },
+      height: {
+        "fill-available": "-webkit-fill-available",
+      },
     },
   },
   plugins: [

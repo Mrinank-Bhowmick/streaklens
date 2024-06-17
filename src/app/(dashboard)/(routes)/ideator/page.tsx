@@ -124,11 +124,17 @@ const Page = () => {
     setPrompt(text);
     router.push(`/ideator/c/${chatID}`);
   };
+
+  const handleExampleButton = (prompt: string) => {
+    const chatID = uuid();
+    setPrompt(prompt);
+    router.push(`/ideator/c/${chatID}`);
+  };
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="text-white">
-      <div className="h-[70vh] md:h-[75vh] flex flex-col items-start justify-start">
+    <div className="text-white h-fill-available">
+      <div className="h-[70dvh] md:h-[75vh] flex flex-col items-start justify-start">
         <div className="w-[95vw] md:w-[78vw] mt-4 ml-4">
           <div className="text-xl flex justify-between items-end">
             Latest News<div className="text-xs"> &lt;-Scroll-&gt;</div>
@@ -138,7 +144,7 @@ const Page = () => {
               topArticles.map((article, index) => (
                 <button
                   key={index}
-                  className="box h-[25vh] w-[20vh] rounded-lg bg-slate-800 flex-col justify-between flex-shrink-0 flex items-end p-2 text-sm"
+                  className="box h-[25dvh] w-[20vh] rounded-lg bg-slate-800 flex-col justify-between flex-shrink-0 flex items-end p-2 text-sm"
                   style={{
                     backgroundImage: `url(${article.image_url})`,
                     backgroundSize: "cover",
@@ -163,9 +169,9 @@ const Page = () => {
             {examples.map((example, index) => (
               <div
                 key={index}
-                className="box h-[15vh] w-[20vh] rounded-lg border-slate-800 hover:bg-slate-800 border flex flex-col  flex-shrink-0 text-sm p-2 gap-2 cursor-pointer"
+                className="box h-[15dvh] w-[20vh] rounded-lg border-slate-800 hover:bg-slate-800 border flex flex-col  flex-shrink-0 text-sm p-2 gap-2 cursor-pointer"
                 onClick={() => {
-                  console.log("clicked");
+                  handleExampleButton(example.prompt);
                 }}
               >
                 {example.icon}
@@ -176,7 +182,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="h-[20vh] md:h-[10vh] flex flex-col items-start justify-center w-full">
+      <div className="h-[20dvh] md:h-[10vh] flex flex-col items-start justify-center w-full">
         {dropDownArticles ? (
           <Modal
             article={dropDownArticles}

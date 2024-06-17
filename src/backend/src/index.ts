@@ -29,10 +29,11 @@ app.get("/hello", async (c) => {
 app.post("/chat-access", async (ctx) => {
   //const auth = getAuth(ctx);
   const body = await ctx.req.json();
-  console.log(body);
+  //console.log(body);
   const chatID = body.chatID;
   const userID = body.userID;
-  console.log(userID);
+  const username = body.username;
+  //console.log(userID);
   const memory = new BufferMemory({
     memoryKey: "history",
     chatHistory: new CloudflareD1MessageHistory({
@@ -60,6 +61,14 @@ app.post("/chat-access", async (ctx) => {
       messageHistory: await memory.chatHistory.getMessages(),
     });
   } else {
+    const result = (
+      await ctx.env.DB.prepare(
+        "INSERT INTO users (userid,sessionid,free_tier_count,username) VALUES (?1,?2,?3,?4)"
+      )
+        .bind(userID, chatID, 100, username)
+        .run()
+    ).success;
+    console.log("Insert result:", result);
     return ctx.json({ hasAccess, messageHistory: "" });
   }
 });
@@ -74,20 +83,6 @@ app.post("/chat", (ctx) => {
     const username = body.username;
     const pageURL = body?.pageURL;
 
-    console.log("Parsed request body:", { userID, chatID, prompt, username });
-
-    if (chatHistory === undefined) {
-      console.log("Inserting new user...");
-      const result = (
-        await ctx.env.DB.prepare(
-          "INSERT INTO users (userid,sessionid,free_tier_count,username) VALUES (?1,?2,?3,?4)"
-        )
-          .bind(userID, chatID, 100, username)
-          .run()
-      ).success;
-      console.log("Insert result:", result);
-    }
-
     const memory = new BufferMemory({
       memoryKey: "history",
       chatHistory: new CloudflareD1MessageHistory({
@@ -100,7 +95,6 @@ app.post("/chat", (ctx) => {
     if (pageURL) {
       console.log("Handling article response...");
     } else {
-      console.log("Processing chat response...");
       const model = new ChatGoogleGenerativeAI({
         model: "gemini-1.5-flash-latest",
         apiKey: ctx.env.GEMINI_API_KEY,
@@ -109,7 +103,7 @@ app.post("/chat", (ctx) => {
           {
             async handleLLMNewToken(token) {
               const chunk = token;
-              console.log(chunk);
+              console.log(JSON.stringify(chunk));
               await stream.write(chunk);
             },
           },

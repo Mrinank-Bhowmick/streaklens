@@ -4,6 +4,8 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useContext } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { ChatContext } from "@/context/ChatContex";
+import Markdown from "react-markdown";
+
 export const runtime = "edge";
 
 export default function Chat() {
@@ -22,24 +24,30 @@ export default function Chat() {
   const [streamData, setStreamData] = useState("");
   const [input_when_streaming, set_input_when_streaming] = useState("");
   const [streaming, setStreaming] = useState(false);
-
+  let basePath = "";
+  try {
+    basePath =
+      process.env.NODE_ENV === "development"
+        ? "http://127.0.0.1:8787/backend"
+        : "/backend";
+  } catch {
+    basePath = "/backend";
+  }
   useEffect(() => {
-    if (didEffectRun.current) return;
+    if (!user || didEffectRun.current) return;
     didEffectRun.current = true;
     const checkAccess = async () => {
-      const response = await fetch(
-        "http://127.0.0.1:8787/backend/chat-access",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chatID,
-            userID: userId,
-          }),
-        }
-      );
+      const response = await fetch(`${basePath}/chat-access`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatID,
+          username: user?.firstName,
+          userID: userId,
+        }),
+      });
 
       const data: any = await response.json();
       const chatConversation: string[][] = [];
@@ -65,14 +73,14 @@ export default function Chat() {
       console.log(chatConversation);
       set_chat_history(chatConversation);
     };
-    console.log(prompt);
     const first_chat_conversation: string[][] = [];
     const first_chat_conversation_element: string[] = [];
     first_chat_conversation_element.push(prompt);
+    setStreaming(true);
+    set_input_when_streaming(prompt);
 
     if (prompt) {
-      // new chat begins
-      const first_chat = fetch("http://127.0.0.1:8787/backend/chat", {
+      const first_chat = fetch(`${basePath}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,47 +94,43 @@ export default function Chat() {
           chat_history: chat_history,
         }),
       })
-        .then((response) => {
+        .then(async (response) => {
           if (!response.body) {
             throw new Error("Error while generating response");
           }
+          const decoder = new TextDecoder("utf-8");
           const reader = response.body.getReader();
           let chunks = "";
-          return new ReadableStream({
-            start(controller) {
-              function push() {
-                reader.read().then(({ done, value }) => {
-                  if (done) {
-                    controller.close();
-                    return;
-                  }
-                  chunks += new TextDecoder("utf-8").decode(value);
-                  first_chat_conversation_element.push(chunks);
-                  first_chat_conversation.push(first_chat_conversation_element);
-                  console.log(first_chat_conversation);
-                  set_chat_history(first_chat_conversation);
-                  chunks = "";
-                  controller.enqueue(value);
-                  push();
-                });
-              }
-              push();
-            },
-          });
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              setStreaming(false);
+              first_chat_conversation_element.push(chunks);
+              first_chat_conversation.push(first_chat_conversation_element);
+              set_chat_history(first_chat_conversation);
+              break;
+            }
+            const decoded_value = decoder.decode(value);
+            chunks += decoded_value;
+            setStreamData(chunks);
+          }
         })
         .catch((error) => console.error(error));
     } else if (prompt === "") {
+      console.log(user?.firstName);
       checkAccess();
     }
-  }, [user, prompt, chatID, userId]);
+  }, [user?.firstName]);
 
   const handleSubmit = async (text: string) => {
     let temp_chat_conversation = [];
     temp_chat_conversation.push(text);
+    setStreamData("");
     set_input_when_streaming(text);
     setStreaming(true);
     //console.log(chat_history);
-    const response = await fetch("http://127.0.0.1:8787/backend/chat", {
+
+    const response = await fetch(`${basePath}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -154,7 +158,7 @@ export default function Chat() {
       }
       const decoded_value = decoder.decode(value);
       chunks += decoded_value;
-      setStreamData(decoded_value);
+      setStreamData(chunks);
     }
 
     temp_chat_conversation.push(chunks);
@@ -166,35 +170,37 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-[90vh]">
-      <div className="overflow-x-auto">
-        <div className="flex flex-col md:ml-8 md:mr-8 md:mb-16 ml-4 mr-4 mb-8">
-          <div>
-            {chat_history.map((element, index) => (
-              <div key={index}>
-                <div className="flex justify-end">
-                  <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">
-                    {element[0]}
+    <div className="text-white h-fill-available">
+      <div className="flex flex-col justify-between h-[90dvh]">
+        <div className="overflow-x-auto">
+          <div className="flex flex-col md:ml-8 md:mr-8 md:mb-16 ml-4 mr-4 mb-8">
+            <div>
+              {chat_history.map((element, index) => (
+                <div key={index}>
+                  <div className="flex justify-end">
+                    <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">
+                      {element[0]}
+                    </div>
+                  </div>
+                  <div>
+                    <Markdown>{element[1]}</Markdown>
                   </div>
                 </div>
-                <div>{element[1]}</div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div className="flex justify-end">
+              {streaming ? (
+                <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">
+                  {input_when_streaming}
+                </div>
+              ) : null}
+            </div>
+            <div>{streaming ? <Markdown>{streamData}</Markdown> : ""}</div>
           </div>
-          <div className="flex justify-end">
-            {streaming ? (
-              <div className="rounded-md bg-slate-800 p-4 mt-2 mb-2">
-                {input_when_streaming}
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div>{streaming ? streamData : ""}</div>
         </div>
-      </div>
-      <div className="ml-4 mr-4">
-        <Searchbar onSubmit={handleSubmit} />
+        <div className="ml-4 mr-4">
+          <Searchbar onSubmit={handleSubmit} />
+        </div>
       </div>
     </div>
   );
