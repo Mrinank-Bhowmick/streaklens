@@ -61,7 +61,8 @@ const Page = () => {
   if (!chatContext) {
     throw new Error("Chat Context Error");
   }
-  const { setPageURL, setPrompt } = chatContext;
+  const { setPageURL, setPrompt, setPageDescription, setImageURL, setTitle } =
+    chatContext;
 
   async function fetchNewsData() {
     try {
@@ -93,6 +94,8 @@ const Page = () => {
         const article: topArticle = {
           title: item.title,
           image_url: item.image_url,
+          description: item.description,
+          link: item.link,
         };
         article_list.push(article);
       });
@@ -111,7 +114,12 @@ const Page = () => {
         setTopArticles(topArticles);
       } else {
         setTopArticles([
-          { title: "Error Fetching from server", image_url: "" },
+          {
+            title: "Error Fetching from server",
+            image_url: "",
+            description: "",
+            link: "",
+          },
         ]);
       }
     }
@@ -125,6 +133,20 @@ const Page = () => {
     router.push(`/ideator/c/${chatID}`);
   };
 
+  const handleArticlePoster = (
+    pageurl: string,
+    description: string,
+    image_url: string,
+    title: string
+  ) => {
+    const chatID = uuid();
+    setPageURL(pageurl);
+    setPageDescription(description);
+    setImageURL(image_url);
+    setTitle(title);
+    router.push(`/ideator/c/${chatID}`);
+  };
+
   const handleExampleButton = (prompt: string) => {
     const chatID = uuid();
     setPrompt(prompt);
@@ -134,7 +156,7 @@ const Page = () => {
 
   return (
     <div className="text-white h-fill-available">
-      <div className="h-[70dvh] md:h-[75vh] flex flex-col items-start justify-start">
+      <div className="h-[65dvh] md:h-[70vh] flex flex-col items-start justify-start">
         <div className="w-[95vw] md:w-[78vw] mt-4 ml-4">
           <div className="text-xl flex justify-between items-end">
             Latest News<div className="text-xs"> &lt;-Scroll-&gt;</div>
@@ -150,7 +172,14 @@ const Page = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  onClick={() => (window.location.href = article.image_url)} // Example click handler
+                  onClick={() =>
+                    handleArticlePoster(
+                      article.link,
+                      article.description,
+                      article.image_url,
+                      article.title
+                    )
+                  } // Example click handler
                 >
                   <ArrowUpRightFromSquare />
                   <span className="text-white bg-black bg-opacity-60 p-1 text-left rounded-lg">
@@ -183,6 +212,7 @@ const Page = () => {
       </div>
 
       <div className="h-[20dvh] md:h-[10vh] flex flex-col items-start justify-center w-full">
+        <div className="text-sm ml-4">For RAG/latest information:-</div>
         {dropDownArticles ? (
           <Modal
             article={dropDownArticles}

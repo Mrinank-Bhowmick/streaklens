@@ -5,6 +5,8 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { ChatContext } from "@/context/ChatContex";
 import Markdown from "react-markdown";
+import toast, { Toaster } from "react-hot-toast";
+import Link from "next/link";
 
 export const runtime = "edge";
 
@@ -14,7 +16,7 @@ export default function Chat() {
   if (!chatData) {
     throw new Error("Chat Data not received");
   }
-  const { prompt, pageURL } = chatData;
+  const { prompt, pageURL, pageDescription, ImageURL, title } = chatData;
 
   const chatID = params.id as string;
   const { userId } = useAuth();
@@ -50,28 +52,32 @@ export default function Chat() {
       });
 
       const data: any = await response.json();
-      const chatConversation: string[][] = [];
-      let chatConversationElement: string[] = [];
+      if (data.hasAccess === false) {
+        toast.error("Unable to load conversation (Refresh)");
+      } else if (data.messageHistory.length > 0) {
+        const chatConversation: string[][] = [];
+        let chatConversationElement: string[] = [];
 
-      data.messageHistory.forEach((message: any, index: number) => {
-        if (message.id.includes("HumanMessage")) {
-          chatConversationElement.push(message.kwargs.content);
-        } else if (message.id.includes("AIMessage")) {
-          chatConversationElement.push(message.kwargs.content);
-        }
+        data.messageHistory.forEach((message: any, index: number) => {
+          if (message.id.includes("HumanMessage")) {
+            chatConversationElement.push(message.kwargs.content);
+          } else if (message.id.includes("AIMessage")) {
+            chatConversationElement.push(message.kwargs.content);
+          }
 
-        // If we have a pair of messages or we're at the last message, push the pair to the chatConversation
-        if (
-          chatConversationElement.length === 2 ||
-          index === data.messageHistory.length - 1
-        ) {
-          chatConversation.push(chatConversationElement);
-          chatConversationElement = []; // Reset for the next pair
-        }
-      });
+          // If we have a pair of messages or we're at the last message, push the pair to the chatConversation
+          if (
+            chatConversationElement.length === 2 ||
+            index === data.messageHistory.length - 1
+          ) {
+            chatConversation.push(chatConversationElement);
+            chatConversationElement = []; // Reset for the next pair
+          }
+        });
 
-      console.log(chatConversation);
-      set_chat_history(chatConversation);
+        console.log(chatConversation);
+        set_chat_history(chatConversation);
+      }
     };
     const first_chat_conversation: string[][] = [];
     const first_chat_conversation_element: string[] = [];
@@ -128,7 +134,7 @@ export default function Chat() {
     setStreamData("");
     set_input_when_streaming(text);
     setStreaming(true);
-    //console.log(chat_history);
+    console.log(pageURL);
 
     const response = await fetch(`${basePath}/chat`, {
       method: "POST",
@@ -171,9 +177,35 @@ export default function Chat() {
 
   return (
     <div className="text-white h-fill-available">
+      <Toaster
+        toastOptions={{
+          duration: 10000,
+        }}
+      />
       <div className="flex flex-col justify-between h-[90dvh]">
         <div className="overflow-x-auto">
           <div className="flex flex-col md:ml-8 md:mr-8 md:mb-16 ml-4 mr-4 mb-8">
+            <div className="flex">
+              {pageURL ? (
+                <div className="flex flex-col w-full">
+                  <div className="mt-6 flex justify-center">
+                    <img
+                      src={ImageURL as string}
+                      style={{ width: "100dvh", height: "35dvh" }}
+                    />
+                  </div>
+                  <div className="text-2xl md:text-4xl mt-3">{title}</div>
+                  <div className="mt-2">{pageDescription}</div>
+                  <Link href={pageURL} className="flex text-blue-500 mt-2">
+                    Visit The Original Article
+                  </Link>
+                  <div>
+                    This article&apos;s information will be automatically
+                    removed after 24 hours
+                  </div>
+                </div>
+              ) : null}
+            </div>
             <div>
               {chat_history.map((element, index) => (
                 <div key={index}>

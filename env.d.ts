@@ -25,6 +25,8 @@ interface Article {
 interface topArticle {
   title: string;
   image_url: string;
+  description: string;
+  link: string;
 }
 
 interface NewsData {
