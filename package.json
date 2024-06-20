@@ -17,6 +17,7 @@
     "@cloudflare/workers-types": "^4.20240603.0",
     "@hono/clerk-auth": "^2.0.0",
     "@langchain/cloudflare": "^0.0.4",
+    "@react-three/fiber": "^8.16.8",
     "@tsparticles/engine": "^3.3.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.3.0",
@@ -26,7 +27,7 @@
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.9.0",
     "flowbite-react-icons": "^1.0.7",
-    "framer-motion": "^11.2.9",
+    "framer-motion": "^11.2.11",
     "hono": "^4.4.4",
     "langchain": "^0.1.37",
     "mini-svg-data-uri": "^1.4.4",
@@ -38,6 +39,7 @@
     "react-router-dom": "^6.23.1",
     "tailwind-merge": "^2.3.0",
     "tailwind-scrollbar-hide": "^1.1.7",
+    "three": "^0.165.0",
     "zod": "^3.23.5"
   },
   "devDependencies": {

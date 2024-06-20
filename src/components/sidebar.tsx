@@ -41,15 +41,12 @@ const SidebarNav = () => {
                   ></path>
                 </svg>
               </button>
-              <a
-                href="https://github.com/Mrinank-Bhowmick/streaklens"
-                className="flex ms-2 md:me-24"
-              >
+              <div className="flex">
                 <Image src={logo} width={45} height={25} alt="" />
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ml-3">
                   StreakLens
                 </span>
-              </a>
+              </div>
             </div>
             <div>
               <UserButton />

@@ -2,8 +2,8 @@
 import React, { createContext, useState } from "react";
 
 interface ChatData {
-  prompt: string;
-  setPrompt: React.Dispatch<React.SetStateAction<string>>;
+  prompt: string | null;
+  setPrompt: React.Dispatch<React.SetStateAction<string | null>>;
   pageURL: string | null;
   setPageURL: React.Dispatch<React.SetStateAction<string | null>>;
   pageDescription: string | null;
@@ -17,7 +17,7 @@ interface ChatData {
 export const ChatContext = createContext<ChatData | null>(null);
 
 const ChatProvider = ({ children }: { children: React.ReactNode }) => {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState<string | null>(null);
   const [pageURL, setPageURL] = useState<string | null>(null);
   const [pageDescription, setPageDescription] = useState<string | null>(null);
   const [ImageURL, setImageURL] = useState<string | null>(null);

@@ -48,7 +48,7 @@ const Page = () => {
       icon: <UserCircle />,
       description: "Write a Linkedin Bio",
       prompt:
-        "Craft a professional LinkedIn bio for a software engineer with 10 years of experience in full-stack development, highlighting key skills, achievements, and career goals.",
+        "Craft a professional LinkedIn bio for a software engineer with 2 years of experience in full-stack development, highlighting key skills, achievements, and career goals.",
     },
   ];
 
@@ -144,6 +144,7 @@ const Page = () => {
     setPageDescription(description);
     setImageURL(image_url);
     setTitle(title);
+    setPrompt(null);
     router.push(`/ideator/c/${chatID}`);
   };
 

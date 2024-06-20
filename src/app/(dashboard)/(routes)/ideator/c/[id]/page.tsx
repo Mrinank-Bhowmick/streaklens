@@ -79,13 +79,13 @@ export default function Chat() {
         set_chat_history(chatConversation);
       }
     };
-    const first_chat_conversation: string[][] = [];
-    const first_chat_conversation_element: string[] = [];
-    first_chat_conversation_element.push(prompt);
-    setStreaming(true);
-    set_input_when_streaming(prompt);
 
     if (prompt) {
+      const first_chat_conversation: string[][] = [];
+      const first_chat_conversation_element: string[] = [];
+      first_chat_conversation_element.push(prompt);
+      setStreaming(true);
+      set_input_when_streaming(prompt);
       const first_chat = fetch(`${basePath}/chat`, {
         method: "POST",
         headers: {
