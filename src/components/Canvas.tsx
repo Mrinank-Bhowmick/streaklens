@@ -131,7 +131,7 @@ const ThumbnailIcon = () => {
     >
       <path
         stroke="currentColor"
-        stroke-linecap="round"
+        //stroke-linecap="round"
         stroke-linejoin="round"
         strokeWidth="2"
         d="m3 16 5-7 6 6.5m6.5 2.5L16 13l-4.286 6M14 10h.01M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"
@@ -153,7 +153,7 @@ const CommingSoonIcon = () => {
     >
       <path
         stroke="currentColor"
-        stroke-linecap="round"
+        //stroke-linecap="round"
         stroke-linejoin="round"
         strokeWidth="2"
         d="M11 9H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6m0-6v6m0-6 5.419-3.87A1 1 0 0 1 18 5.942v12.114a1 1 0 0 1-1.581.814L11 15m7 0a3 3 0 0 0 0-6M6 15h3v5H6v-5Z"
@@ -175,7 +175,7 @@ const IdeatorIcon = () => {
     >
       <path
         stroke="currentColor"
-        stroke-linecap="round"
+        //stroke-linecap="round"
         stroke-linejoin="round"
         strokeWidth="2"
         d="M9 9a3 3 0 0 1 3-3m-2 15h4m0-3c0-4.1 4-4.9 4-9A6 6 0 1 0 6 9c0 4 4 5 4 9h4Z"
